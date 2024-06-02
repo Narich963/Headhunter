@@ -1,5 +1,4 @@
 using Headhunter.Models;
-using Headhunter.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -22,19 +21,6 @@ builder.Services
     .AddEntityFrameworkStores<Context>();
 
 var app = builder.Build();
-
-using var scope = app.Services.CreateScope();
-var services = scope.ServiceProvider;
-try
-{
-    var roleManager = services.GetRequiredService<RoleManager<IdentityRole<int>>>();
-    await RolesInitializer.SeedRoles(roleManager);
-}
-catch (Exception ex)
-{
-    var logger = services.GetRequiredService<ILogger<Program>>();
-    logger.LogError(ex, "An error has occured while seeding the database");
-}
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
