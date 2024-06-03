@@ -1,0 +1,46 @@
+﻿@using Headhunter.ViewModels
+@model RegisterViewModel
+
+<form asp-action="Register" method="post" asp-antiforgery="true">
+    <div class="validation" asp-validation-summary="ModelOnly"></div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Имя пользователя</label>
+        <input asp-for="Username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <span asp-validation-for="Username"></span>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Ел. почта</label>
+        <input asp-for="Email" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <span asp-validation-for="Email"></span>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Роль</label>
+        <select asp-for="Role">
+            <option value=""></option>
+            <option value="Наниматель">Наниматель</option>
+            <option value="Соискатель">Соискатель</option>
+        </select>
+        <span asp-validation-for="Role"></span>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Фото профиля</label>
+        <input asp-for="Avatar" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputEmail1" class="form-label">Номер телефона</label>
+        <input asp-for="ContactPhone" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
+        <span asp-validation-for="ContactPhone"></span>
+    </div>
+    <div class="mb-3 password">
+        <label for="exampleInputPassword1" class="form-label">Пароль</label>
+        <input asp-for="Password" type="password" class="form-control" id="password-input">
+        <a href="#" class="password-control mt-4"></a>
+        <span asp-validation-for="Password"></span>
+    </div>
+    <div class="mb-3">
+        <label for="exampleInputPassword1" class="form-label">Подтвердите пароль</label>
+        <input asp-for="ConfirmPassword" type="password" class="form-control">
+        <span asp-validation-for="ConfirmPassword"></span>
+    </div>
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
