@@ -4,7 +4,7 @@
 <form asp-action="Register" method="post" asp-antiforgery="true">
     <div class="validation" asp-validation-summary="ModelOnly"></div>
     <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Имя пользователя</label>
+        <label for="exampleInputEmail1" class="form-label">Имя профиля</label>
         <input asp-for="Username" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
         <span asp-validation-for="Username"></span>
     </div>
@@ -15,7 +15,7 @@
     </div>
     <div class="mb-3">
         <label for="exampleInputEmail1" class="form-label">Роль</label>
-        <select asp-for="Role">
+        <select asp-for="Role" id="select">
             <option value=""></option>
             <option value="Наниматель">Наниматель</option>
             <option value="Соискатель">Соискатель</option>
@@ -23,7 +23,7 @@
         <span asp-validation-for="Role"></span>
     </div>
     <div class="mb-3">
-        <label for="exampleInputEmail1" class="form-label">Полное имя</label>
+        <label id="name" for="exampleInputEmail1" class="form-label">Ф.И.О.</label>
         <input asp-for="Name" type="text" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
         <span asp-validation-for="Name"></span>
     </div>
@@ -49,3 +49,16 @@
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+
+<script>
+    $('#select').change(function () {
+        if ($('#select option:selected').val() == "Наниматель") {
+            $('#name').text('Имя компании');
+        }
+        else{
+            $('#name').text('Ф.И.О.');
+        }
+    })
+</script>
