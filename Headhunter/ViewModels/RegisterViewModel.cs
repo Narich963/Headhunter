@@ -9,6 +9,8 @@ public class RegisterViewModel
 
     [Required(ErrorMessage = "Email field is empty")]
     public string Email { get; set; }
+    [Required(ErrorMessage = "Name field is empty")]
+    public string Name { get; set; }
 
     [Required(ErrorMessage = "Role field is empty")]
     public string Role { get; set; }

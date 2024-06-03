@@ -66,7 +66,8 @@ public class AccountController : Controller
                 UserName = model.Username,
                 Avatar = model.Avatar,
                 Role = model.Role,
-                PhoneNumber = model.ContactPhone
+                PhoneNumber = model.ContactPhone,
+                Name = model.Name
             };
             if (model.Avatar == null)
             {
