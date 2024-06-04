@@ -64,17 +64,17 @@
     <h4>User</h4>
     <hr />
     <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Avatar)
+        </dt>
+        <dd class="col-sm-10">
+            <img src="@Model.Avatar" alt="..." style="width: 18rem; height: 300px;"/>
+        </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Name)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Avatar)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Avatar)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Role)
@@ -89,46 +89,10 @@
             @Html.DisplayFor(model => model.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NormalizedUserName)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NormalizedUserName)
-        </dd>
-        <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.Email)
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NormalizedEmail)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NormalizedEmail)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.EmailConfirmed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.EmailConfirmed)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PasswordHash)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PasswordHash)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.SecurityStamp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.SecurityStamp)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ConcurrencyStamp)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ConcurrencyStamp)
         </dd>
         <dt class = "col-sm-2">
             @Html.DisplayNameFor(model => model.PhoneNumber)
@@ -136,41 +100,14 @@
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.PhoneNumber)
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.PhoneNumberConfirmed)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.PhoneNumberConfirmed)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.TwoFactorEnabled)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TwoFactorEnabled)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LockoutEnd)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LockoutEnd)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.LockoutEnabled)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.LockoutEnabled)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AccessFailedCount)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AccessFailedCount)
-        </dd>
     </dl>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<a asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать</a>
+<div class="row">
+    <div id="resumes">
+
+    </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
@@ -182,4 +119,25 @@
     src="https://code.jquery.com/jquery-3.7.1.js" 
     integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" 
     crossorigin="anonymous">
+</script>
+
+<script>
+    function loadResumes() {
+        $.ajax({
+            url: '@Url.Action("Index", "Resume")',
+            type: 'GET',
+            data: { 'userId': @Model.Id},
+            success: function (data) {
+                $('#resumes').html(data);
+                console.log('resumes uploaded');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+    loadResumes();
+
+    setInterval(loadResumes, 3000);
 </script>
