@@ -8,6 +8,10 @@
 <form asp-action="Create" asp-controller="Module" method="post">
     <div class="modal-body">
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        @if (ViewBag.ResumeId != null)
+        {
+            <input type="hidden" asp-for="ResumeId" value="@ViewBag.ResumeId"/>
+        }
         <div class="form-group">
             <label asp-for="Type" class="control-label">Тип модуля</label>
             <select asp-for="Type">

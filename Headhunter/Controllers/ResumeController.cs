@@ -77,7 +77,7 @@ public class ResumeController : Controller
                         await _context.SaveChangesAsync();
                     }
                 }
-                return RedirectToAction("Details", routeValues: resume.Id);
+                return RedirectToAction("Details", routeValues: new {id = resume.Id});
             }
             _context.RemoveRange(Modules);
             await _context.SaveChangesAsync();
@@ -94,6 +94,7 @@ public class ResumeController : Controller
                 .Include(r => r.User)
                 .Include(r => r.Modules)
                 .FirstOrDefaultAsync(r => r.Id ==  id);
+
             if (resume != null)
             {
                 return View(resume);
@@ -115,7 +116,6 @@ public class ResumeController : Controller
         {
             return NotFound();
         }
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", resume.UserId);
         return View(resume);
     }
 
@@ -124,12 +124,15 @@ public class ResumeController : Controller
     // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(int id, [Bind("Id,Category,JobPosition,ExpectedSalary,Telegram,Facebook,LinkedIn,Created,Updated,IsPublished,UserId")] Resume resume)
+    public async Task<IActionResult> Edit(int id, Resume resume)
     {
         if (id != resume.Id)
         {
             return NotFound();
         }
+
+        var oldResume = await _context.Resumes.AsNoTracking().FirstOrDefaultAsync(o => o.Id ==  resume.Id);
+        resume.UserId = oldResume.UserId;
 
         if (ModelState.IsValid)
         {
@@ -149,9 +152,8 @@ public class ResumeController : Controller
                     throw;
                 }
             }
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction("Details", new {id = resume.Id});
         }
-        ViewData["UserId"] = new SelectList(_context.Users, "Id", "Id", resume.UserId);
         return View(resume);
     }
 
@@ -179,14 +181,14 @@ public class ResumeController : Controller
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var resume = await _context.Resumes.FindAsync(id);
+        var resume = await _context.Resumes.Include(r => r.User).FirstOrDefaultAsync(r => r.Id == id);
         if (resume != null)
         {
             _context.Resumes.Remove(resume);
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction(nameof(Index));
+        return RedirectToAction("Details", "Employee", new {id = resume.UserId});
     }
     public async Task<IActionResult> Update(int? id)
     {
