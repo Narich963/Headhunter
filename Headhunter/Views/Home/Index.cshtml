@@ -1,8 +1,49 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@using Headhunter.ViewModels
+@model ResumeOrVacancy
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container">
+    @if (Model.Vacancies != null)
+    {
+        <h2>Вакансии</h2>
+        @foreach (var v in Model.Vacancies)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Название: @v.Name</h5>
+                    <p class="card-text">Зарплата: @v.Salary</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Дата публикации: @v.Created.ToLongDateString()</li>
+                    <li class="list-group-item">
+                        <a asp-action="Details" asp-controller="User" asp-route-id="@v.User.Id">Компания: @v.User.Name</a>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <a asp-action="Details" asp-controller="Vacancy" asp-route-id="@v.Id" class="card-link">Подробнее</a>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <h2>Резюме</h2>
+        @foreach (var r in Model.Resumes)
+        {
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">Название: @r.JobPosition</h5>
+                    <p class="card-text">Зарплата: @r.Category</p>
+                </div>
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Дата публикации: @r.Created.ToLongDateString()</li>
+                    <li class="list-group-item">
+                        <a asp-action="Details" asp-controller="User" asp-route-id="@r.User.Id">Ф.И.О.: @r.User.Name</a>
+                    </li>
+                </ul>
+                <div class="card-body">
+                    <a asp-action="Details" asp-controller="Resume" asp-route-id="@r.Id" class="card-link">Подробнее</a>
+                </div>
+            </div>
+        }
+    }
 </div>

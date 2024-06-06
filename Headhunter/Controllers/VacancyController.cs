@@ -195,6 +195,25 @@ public class VacancyController : Controller
         }
         return NotFound();
     }
+    public async Task<IActionResult> Apply(int id)
+    {
+        User user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            if (user.Role == "Соискатель")
+            {
+                var resumes = await _context.Resumes
+                    .Include(r => r.User)
+                    .Where(r => r.UserId == user.Id)
+                    .ToListAsync();
+
+                ViewBag.Id = id;
+                return PartialView("_ApplyPartial", resumes);
+            }
+            ModelState.AddModelError("", "Только соискатели могут откликаться на вакансии");
+        }
+        return NotFound();
+    }
     private bool VacancyExists(int id)
     {
         return _context.Vacancies.Any(e => e.Id == id);
