@@ -102,8 +102,14 @@
         </dd>
     </dl>
 </div>
-
-<a id="resume-add" asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
+@if (Model.Role == "Наниматель")
+{
+    <a id="add" asp-action="Create" asp-controller="Vacancy" asp-route-userId="@Model.Id">Создать вакансию</a>
+}
+else
+{
+    <a id="add" asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
+}
 <div id="resumes" class="row">
 </div>
 
@@ -128,8 +134,29 @@
             }
         });
     }
+    function loadVacancies() {
+        $.ajax({
+            url: '@Url.Action("Index", "Vacancy")',
+            type: 'GET',
+            data: { 'userId': @Model.Id},
+            success: function (data) {
+                $('#resumes').html(data);
+                console.log('vacancies uploaded');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+    // Наниматель с юникода
+    if ('@Model.Role' == '&#x41D;&#x430;&#x43D;&#x438;&#x43C;&#x430;&#x442;&#x435;&#x43B;&#x44C;') {
+        loadVacancies();
 
-    loadResumes();
+        setInterval(loadVacancies, 1000);
+    }
+    else{
+        loadResumes();
 
-    setInterval(loadResumes, 1000);
+        setInterval(loadResumes, 1000);
+    }
 </script>

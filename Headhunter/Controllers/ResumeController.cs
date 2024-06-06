@@ -182,13 +182,14 @@ public class ResumeController : Controller
     public async Task<IActionResult> DeleteConfirmed(int id)
     {
         var resume = await _context.Resumes.Include(r => r.User).FirstOrDefaultAsync(r => r.Id == id);
+        var userId = resume.UserId;
         if (resume != null)
         {
             _context.Resumes.Remove(resume);
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction("Details", "User", new {id = resume.UserId});
+        return RedirectToAction("Details", "User", new {id = userId});
     }
     public async Task<IActionResult> Update(int? id)
     {
