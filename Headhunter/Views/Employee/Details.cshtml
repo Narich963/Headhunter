@@ -17,38 +17,38 @@
             </div>
             <form asp-action="Edit" method="post">
                 <div class="modal-body">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-                            <label asp-for="Name" class="control-label"></label>
-                            <input asp-for="Name" class="form-control" />
-                            <span asp-validation-for="Name" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Avatar" class="control-label"></label>
-                            <input asp-for="Avatar" class="form-control" />
-                            <span asp-validation-for="Avatar" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Role" class="control-label"></label>
-                            <input asp-for="Role" class="form-control" />
-                            <span asp-validation-for="Role" class="text-danger"></span>
-                        </div>
-                        <input type="hidden" asp-for="Id" />
-                        <div class="form-group">
-                            <label asp-for="UserName" class="control-label"></label>
-                            <input asp-for="UserName" class="form-control" />
-                            <span asp-validation-for="UserName" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="Email" class="control-label"></label>
-                            <input asp-for="Email" class="form-control" />
-                            <span asp-validation-for="Email" class="text-danger"></span>
-                        </div>
-                        <div class="form-group">
-                            <label asp-for="PhoneNumber" class="control-label"></label>
-                            <input asp-for="PhoneNumber" class="form-control" />
-                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
-                        </div>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Name" class="control-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Avatar" class="control-label"></label>
+                        <input asp-for="Avatar" class="form-control" />
+                        <span asp-validation-for="Avatar" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Role" class="control-label"></label>
+                        <input asp-for="Role" class="form-control" />
+                        <span asp-validation-for="Role" class="text-danger"></span>
+                    </div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="form-group">
+                        <label asp-for="UserName" class="control-label"></label>
+                        <input asp-for="UserName" class="form-control" />
+                        <span asp-validation-for="UserName" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Email" class="control-label"></label>
+                        <input asp-for="Email" class="form-control" />
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="PhoneNumber" class="control-label"></label>
+                        <input asp-for="PhoneNumber" class="form-control" />
+                        <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <div class="form-group">
@@ -104,16 +104,8 @@
 </div>
 
 <a asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать</a>
-<div class="row">
-    <div id="resumes">
-
-    </div>
+<div id="resumes" class="row">
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
-        integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
-        crossorigin="anonymous"></script>
-</script>
 
 <script 
     src="https://code.jquery.com/jquery-3.7.1.js" 
@@ -126,7 +118,7 @@
         $.ajax({
             url: '@Url.Action("Index", "Resume")',
             type: 'GET',
-            data: { 'userId': @Model.Id},
+            data: {'userId': @Model.Id},
             success: function (data) {
                 $('#resumes').html(data);
                 console.log('resumes uploaded');
@@ -139,5 +131,5 @@
 
     loadResumes();
 
-    setInterval(loadResumes, 3000);
+    setInterval(loadResumes, 1000);
 </script>

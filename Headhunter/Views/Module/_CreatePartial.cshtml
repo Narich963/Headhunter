@@ -1,0 +1,58 @@
+﻿@model Headhunter.Models.Module
+
+
+<div class="modal-header">
+    <h5 class="modal-title">Создать модуль</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<form asp-action="Create" asp-controller="Module" method="post">
+    <div class="modal-body">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <label asp-for="Type" class="control-label">Тип модуля</label>
+            <select asp-for="Type">
+                <option value=""></option>
+                <option value="Опыт работы">Опыт работа</option>
+                <option value="Обучение">Обучение</option>
+            </select>
+            <span asp-validation-for="Type" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="JobPosition" class="control-label">Должность</label>
+            <input asp-for="JobPosition" class="form-control" />
+            <span asp-validation-for="JobPosition" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Responsibilities" class="control-label">Обязанности</label>
+            <input asp-for="Responsibilities" class="form-control" />
+            <span asp-validation-for="Responsibilities" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PlaceName" class="control-label">Название места</label>
+            <input asp-for="PlaceName" class="form-control" />
+            <span asp-validation-for="PlaceName" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="WorkingYear" class="control-label">Год прохождения</label>
+            <input asp-for="WorkingYear" class="form-control" />
+            <span asp-validation-for="WorkingYear" class="text-danger"></span>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="form-group">
+            <button id="submit" class="btn btn-primary" type="submit">Добавить модуль</button>
+        </div>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    $('#submit').on('click', function(){
+        $('.modal-title').text('Модуль создан');
+        $('.modal-title').addClass('text-success');
+    })
+</script>

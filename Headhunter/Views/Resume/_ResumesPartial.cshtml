@@ -12,8 +12,8 @@ else
             <div class="card-body">
                 <a asp-action="Details" asp-route-id="@r.Id">
                     <h5 class="card-title">Должность: @r.JobPosition</h5>
-                    <p class="card-text">Дата обновления: @r.Updated.ToLongDateString()</p>
                 </a>
+                <p class="card-text">Дата обновления: @r.Updated.ToLongDateString()</p>
             </div>
             <div class="card-body">
                 <a asp-action="Update" asp-route-id="@r.Id" class="card-link">Обновить</a>

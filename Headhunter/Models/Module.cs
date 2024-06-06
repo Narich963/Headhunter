@@ -9,6 +9,6 @@ public class Module
     public string Responsibilities { get; set; }
     public int WorkingYear { get; set; }
 
-    public int ResumeId { get; set; }
-    public Resume Resume { get; set; }
+    public int? ResumeId { get; set; }
+    public Resume? Resume { get; set; }
 }
