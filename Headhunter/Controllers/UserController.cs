@@ -5,13 +5,13 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Headhunter.Controllers
 {
-    public class EmployeeController : Controller
+    public class UserController : Controller
     {
         private readonly Context _context;
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
 
-        public EmployeeController(Context context, UserManager<User> manager, SignInManager<User> signInManager)
+        public UserController(Context context, UserManager<User> manager, SignInManager<User> signInManager)
         {
             _context = context;
             _userManager = manager;

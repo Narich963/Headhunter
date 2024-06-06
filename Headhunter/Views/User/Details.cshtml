@@ -4,7 +4,7 @@
     ViewData["Title"] = "Details";
 }
 
-<h1>Details</h1>
+<h1 id="title">Личный кабинет</h1>
 
 <button id="edit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
 
@@ -103,7 +103,7 @@
     </dl>
 </div>
 
-<a asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
+<a id="resume-add" asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
 <div id="resumes" class="row">
 </div>
 

@@ -9,8 +9,10 @@ public class User : IdentityUser<int>
     public string Role { get; set; }
 
     public List<Resume> Resumes { get; set; }
+    public List<Vacancy> Vacancies { get; set; }
     public User()
     {
         Resumes = new List<Resume>();   
+        Vacancies = new List<Vacancy>();
     }
 }

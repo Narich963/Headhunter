@@ -188,7 +188,7 @@ public class ResumeController : Controller
         }
 
         await _context.SaveChangesAsync();
-        return RedirectToAction("Details", "Employee", new {id = resume.UserId});
+        return RedirectToAction("Details", "User", new {id = resume.UserId});
     }
     public async Task<IActionResult> Update(int? id)
     {
