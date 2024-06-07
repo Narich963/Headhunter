@@ -78,6 +78,18 @@
 else
 {
     <div>
-        <a>Откликнуться</a>
+        <button id="edit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
     </div>
 }
+
+<div class="modal" id="myModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div id="edit-body" class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Редактировать профиль</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            
+        </div>
+    </div>
+</div>

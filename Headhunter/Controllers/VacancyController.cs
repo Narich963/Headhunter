@@ -205,6 +205,7 @@ public class VacancyController : Controller
                 var resumes = await _context.Resumes
                     .Include(r => r.User)
                     .Where(r => r.UserId == user.Id)
+                    .Where(r => r.IsPublished == true)
                     .ToListAsync();
 
                 ViewBag.Id = id;
