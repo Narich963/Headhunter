@@ -1,0 +1,37 @@
+﻿@model List<Resume>
+
+<div id="remove">
+    <div class="modal-header">
+        <h5 class="modal-title">Выберите резюме</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+        <form method="post">
+            <select id="resume">
+                @foreach (var r in Model)
+                {
+                    <option value="@r.Id">@r.JobPosition</option>
+                }
+            </select>
+            <button id="submit" type="submit">Выбрать резюме</button>
+        </form>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    $('#sumbit').on('click', function () {
+        $.ajax({
+            url: '@Url.Action("Apply", "Vacancy")',
+            type: 'POST,
+            data: {'vacancyId': @ViewBag.VacancyId, 'resumeId': $('#resume option:selected').val()},
+            success: function () {
+                $('#remove').remove();
+            }
+        })
+    })
+</script>

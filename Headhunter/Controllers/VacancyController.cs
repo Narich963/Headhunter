@@ -195,7 +195,8 @@ public class VacancyController : Controller
         }
         return NotFound();
     }
-    public async Task<IActionResult> Apply(int id)
+    [HttpGet]
+    public async Task<IActionResult> Apply(int vacancyId)
     {
         User user = await _userManager.GetUserAsync(User);
         if (user != null)
@@ -207,11 +208,34 @@ public class VacancyController : Controller
                     .Where(r => r.UserId == user.Id)
                     .Where(r => r.IsPublished == true)
                     .ToListAsync();
-
-                ViewBag.Id = id;
+                ViewBag.VacancyId = vacancyId;
                 return PartialView("_ApplyPartial", resumes);
             }
             ModelState.AddModelError("", "Только соискатели могут откликаться на вакансии");
+        }
+        return NotFound();
+    }
+    [HttpPost]
+    public async Task<IActionResult> Apply(int vacancyId, int resumeId)
+    {
+        Resume resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == resumeId);
+        if (resume != null)
+        {
+            var vacancy = await _context.Vacancies.Include(v => v.User).FirstOrDefaultAsync(v => v.Id == vacancyId);
+            User employee = await _userManager.GetUserAsync(User);
+            if (employee != null)
+            {
+                Chat chat = new()
+                {
+                    EmployeeId = employee.Id,
+                    EmployerId = vacancy.UserId,
+                    ResumeId = resume.Id,
+                    VacancyId = vacancyId
+                };
+                await _context.AddAsync(chat);
+                await _context.SaveChangesAsync();
+                return View();
+            }
         }
         return NotFound();
     }

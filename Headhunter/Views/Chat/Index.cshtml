@@ -1,0 +1,53 @@
+﻿@model List<Chat>
+
+<table>
+    <thead>
+        <tr>
+            <th>Id</th>
+            <th>Наниматель</th>
+            <th>Соискатель</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Id</td>
+                <td>@c.Employer.Name</td>
+                <td>@c.Employee.Name</td>
+                <td><button id="details" onclick="loadChat(@c.Id)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Перейти</button></td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="modal" id="myModal" tabindex="-1">
+    <div class="modal-dialog modal-fullscreen">
+        <div id="chat" class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    function loadChat(chatId) {
+        $.ajax({
+            url: '@Url.Action("Details", "Chat")',
+            type: 'GET',
+            data: { 'chatId': chatId },
+            success: function (data) {
+                $('#chat').html(data);
+                console.log('super good');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+</script>

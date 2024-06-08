@@ -1,0 +1,72 @@
+﻿@model Chat
+<div class="modal-header">
+    <h5 class="modal-title">Чат с @Model.Employer.Name</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <div class="page-content page-container" id="page-content">
+        <div class="padding">
+            <div class="row container d-flex justify-content-center">
+                <div class="col-md-6">
+                    <div class="card card-bordered">
+                        <div class="ps-container ps-theme-default ps-active-y" id="chat-content" style="overflow-y: scroll !important; height:400px !important;">
+                            @* Сообщения *@
+                            <div id="messages">
+
+                            </div>
+
+                            <div class="ps-scrollbar-x-rail" style="left: 0px; bottom: 0px;"><div class="ps-scrollbar-x" tabindex="0" style="left: 0px; width: 0px;"></div></div><div class="ps-scrollbar-y-rail" style="top: 0px; height: 0px; right: 2px;"><div class="ps-scrollbar-y" tabindex="0" style="top: 0px; height: 2px;"></div></div>
+                        </div>
+
+                        <div class="publisher bt-1 border-black">
+                            <input id="body" maxlength="100" class="publisher-input" type="text">
+                            <button id="submit" type="submit">Отправить</button>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    $('#submit').on('click', function () {
+        event.preventDefault();
+        $.ajax({
+            url: '@Url.Action("Create", "Message")',
+            type: 'POST',
+            data: { 'chatId': @Model.Id, 'body': $('#body').val() },
+            success: function () {
+                console.log('message created');
+            },
+            error: function () {
+                console.log('message create fail');
+            }
+        });
+    });
+
+    function loadMessage() {
+        $.ajax({
+            url: '@Url.Action("GetMessages", "Message")',
+            type: 'GET',
+            data: {'chatId': @Model.Id},
+            success: function (data) {
+                $('#messages').html(data);
+                console.log('messages uploaded');
+            },
+            error: function () {
+                console.log('message upload fail');
+            }
+        });
+    }
+
+    loadMessage();
+
+    setInterval(loadMessage, 1000);
+</script>

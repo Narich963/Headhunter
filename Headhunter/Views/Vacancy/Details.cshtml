@@ -78,18 +78,39 @@
 else
 {
     <div>
-        <button id="edit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
+        <button id="edit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">Откликнуться</button>
     </div>
 }
 
 <div class="modal" id="myModal" tabindex="-1">
     <div class="modal-dialog">
-        <div id="edit-body" class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Редактировать профиль</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+        <div id="resume-choice" class="modal-content">
             
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+
+<script>
+    function loadResumes(){
+        $.ajax({
+            url: '@Url.Action("Apply", "Vacancy")',
+            type: 'GET',
+            data: { 'vacancyId': @Model.Id},
+            success: function (data) {
+                $('#resume-choice').html(data);
+                console.log('resumes uploaded');
+            },
+            error: function () {
+                console.log('error');
+            }
+        })
+    }
+    loadResumes();
+
+    setInterval(loadResumes, 10000);
+</script>
