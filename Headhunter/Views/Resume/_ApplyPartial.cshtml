@@ -1,4 +1,4 @@
-﻿@model List<Resume>
+﻿@model List<Vacancy>
 
 <div id="remove">
     <div class="modal-header">
@@ -7,14 +7,20 @@
     </div>
     <div class="modal-body">
         <form method="post" asp-action="Apply">
-            <select name="resumeId" id="resume">
+            <select name="vacancyId" id="resume">
                 @foreach (var r in Model)
                 {
-                    <option value="@r.Id">@r.JobPosition</option>
+                    <option value="@r.Id">@r.Name</option>
                 }
             </select>
-            <input type="hidden" name="vacancyId" value="@ViewBag.VacancyId"/>
+            <input type="hidden" name="resumeId" value="@ViewBag.ResumeId"/>
             <button id="submit" type="submit">Выбрать резюме</button>
         </form>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.js"
+        integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
+        crossorigin="anonymous">
+</script>
+

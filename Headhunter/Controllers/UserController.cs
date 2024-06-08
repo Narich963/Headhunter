@@ -2,142 +2,167 @@
 using Microsoft.EntityFrameworkCore;
 using Headhunter.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
-namespace Headhunter.Controllers
+namespace Headhunter.Controllers;
+[Authorize]
+
+public class UserController : Controller
 {
-    public class UserController : Controller
+    private readonly Context _context;
+    private readonly UserManager<User> _userManager;
+    private readonly SignInManager<User> _signInManager;
+
+    public UserController(Context context, UserManager<User> manager, SignInManager<User> signInManager)
     {
-        private readonly Context _context;
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+        _context = context;
+        _userManager = manager;
+        _signInManager = signInManager;
+    }
 
-        public UserController(Context context, UserManager<User> manager, SignInManager<User> signInManager)
+    // GET: Employee
+    public async Task<IActionResult> Index()
+    {
+        return View(await _context.Users.ToListAsync());
+    }
+
+    // GET: Employee/Details/5
+    public async Task<IActionResult> Details(int? id, string? name)
+    {
+        if (id == null && name == null)
         {
-            _context = context;
-            _userManager = manager;
-            _signInManager = signInManager;
+            return NotFound();
         }
-
-        // GET: Employee
-        public async Task<IActionResult> Index()
+        User user = new();
+        if (id == null && name != null)
         {
-            return View(await _context.Users.ToListAsync());
+            user = await _context.Users
+            .FirstOrDefaultAsync(m => m.UserName == name);
         }
-
-        // GET: Employee/Details/5
-        public async Task<IActionResult> Details(int? id)
+        else
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
+            user = await _context.Users
                 .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+        }
+        if (user == null)
+        {
+            return NotFound();
         }
 
-        // GET: Employee/Edit/5
-        public async Task<IActionResult> Edit(int? userId)
-        {
-            if (userId == null)
-            {
-                return NotFound();
-            }
+        return View(user);
+    }
 
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-            return PartialView("_EditPartial", user);
+    // GET: Employee/Edit/5
+    public async Task<IActionResult> Edit(int? userId)
+    {
+        if (userId == null)
+        {
+            return NotFound();
         }
 
-        // POST: Employee/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, User user)
+        var user = await _context.Users.FindAsync(userId);
+        if (user.UserName != User.Identity.Name)
         {
-            if (id != user.Id)
-            {
-                return NotFound();
-            }
+            return BadRequest();
+        }
+        if (user == null)
+        {
+            return NotFound();
+        }
+        return PartialView("_EditPartial", user);
+    }
 
-            if (ModelState.IsValid)
+    // POST: Employee/Edit/5
+    // To protect from overposting attacks, enable the specific properties you want to bind to.
+    // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    [HttpPost]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> Edit(int id, User user)
+    {
+        if (id != user.Id)
+        {
+            return NotFound();
+        }
+
+        if (ModelState.IsValid)
+        {
+            try
             {
-                try
+                User oldUser = await _context.Users.FirstOrDefaultAsync(o => o.Id == id);
+                if (oldUser.UserName != User.Identity.Name)
                 {
-                    User oldUser = await _context.Users.FirstOrDefaultAsync(o => o.Id == id);
-                    oldUser.Name = user.Name;
-                    oldUser.PhoneNumber = user.PhoneNumber;
-                    oldUser.Email = user.Email;
-                    oldUser.UserName = user.UserName;
-                    oldUser.Avatar = user.Avatar;
-                    oldUser.NormalizedUserName = user.UserName.ToUpper();
-                    oldUser.NormalizedEmail = user.Email.ToUpper();
-                    _context.Update(oldUser);
-                    await _context.SaveChangesAsync();
-                    await _signInManager.SignOutAsync();
-                    return RedirectToAction("Login", "Account");
+                    return BadRequest();
                 }
-                catch (DbUpdateConcurrencyException)
+                oldUser.Name = user.Name;
+                oldUser.PhoneNumber = user.PhoneNumber;
+                oldUser.Email = user.Email;
+                oldUser.UserName = user.UserName;
+                oldUser.Avatar = user.Avatar;
+                oldUser.NormalizedUserName = user.UserName.ToUpper();
+                oldUser.NormalizedEmail = user.Email.ToUpper();
+                _context.Update(oldUser);
+                await _context.SaveChangesAsync();
+                await _signInManager.SignOutAsync();
+                return RedirectToAction("Login", "Account");
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(user.Id))
                 {
-                    if (!UserExists(user.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
                 }
             }
-            return View(user);
         }
+        return View(user);
+    }
 
-        // GET: Employee/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+    // GET: Employee/Delete/5
+    public async Task<IActionResult> Delete(int? id)
+    {
+        if (id == null)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var user = await _context.Users
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            return View(user);
+            return NotFound();
         }
 
-        // POST: Employee/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        var user = await _context.Users
+            .FirstOrDefaultAsync(m => m.Id == id);
+        if (user.UserName != User.Identity.Name)
         {
-            var user = await _context.Users.FindAsync(id);
-            if (user != null)
-            {
-                _context.Users.Remove(user);
-            }
-
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            return BadRequest();
         }
-
-        private bool UserExists(int id)
+        if (user == null)
         {
-            return _context.Users.Any(e => e.Id == id);
+            return NotFound();
         }
+
+        return View(user);
+    }
+
+    // POST: Employee/Delete/5
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
+    {
+        var user = await _context.Users.FindAsync(id);
+        if (user.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
+        if (user != null)
+        {
+            _context.Users.Remove(user);
+        }
+
+        await _context.SaveChangesAsync();
+        return RedirectToAction(nameof(Index));
+    }
+
+    private bool UserExists(int id)
+    {
+        return _context.Users.Any(e => e.Id == id);
     }
 }

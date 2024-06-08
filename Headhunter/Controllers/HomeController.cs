@@ -1,6 +1,7 @@
 using Headhunter.Models;
 using Headhunter.Services;
 using Headhunter.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +9,7 @@ using System.Diagnostics;
 using static Headhunter.Services.Order;
 
 namespace Headhunter.Controllers;
-
+[Authorize]
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger;

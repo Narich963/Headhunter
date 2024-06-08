@@ -5,8 +5,10 @@
 }
 
 <h1 id="title">Личный кабинет</h1>
-
-<button id="edit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
+@if (User.Identity.Name == Model.UserName)
+{
+    <button id="edit" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Edit</button>
+}
 
 <div class="modal" id="myModal" tabindex="-1">
     <div class="modal-dialog">
@@ -102,15 +104,19 @@
         </dd>
     </dl>
 </div>
-@if (Model.Role == "Наниматель")
+@if (User.Identity.Name == Model.UserName)
 {
-    <a id="add" asp-action="Create" asp-controller="Vacancy" asp-route-userId="@Model.Id">Создать вакансию</a>
-}
-else
-{
-    <a id="add" asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
+    @if (Model.Role == "Наниматель")
+    {
+        <a id="add" asp-action="Create" asp-controller="Vacancy" asp-route-userId="@Model.Id">Создать вакансию</a>
+    }
+    else
+    {
+        <a id="add" asp-action="Create" asp-controller="Resume" asp-route-userId="@Model.Id">Создать резюме</a>
+    }
 }
 <div id="resumes" class="row">
+
 </div>
 
 <script 

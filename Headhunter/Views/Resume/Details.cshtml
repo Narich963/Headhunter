@@ -93,16 +93,26 @@
                     </ul>
                 </div>
                 <div class="card-body">
-                    <a asp-action="Edit" asp-controller="Module" asp-route-moduleId="@m.Id">Изменить</a>
-                    <a asp-action="Delete" asp-controller="Module" asp-route-id="@m.Id">Удалить</a>
+                    @if (User.Identity.Name == Model.User.Name)
+                    {
+                        <a asp-action="Edit" asp-controller="Module" asp-route-moduleId="@m.Id">Изменить</a>
+                        <a asp-action="Delete" asp-controller="Module" asp-route-id="@m.Id">Удалить</a>
+                    }
                 </div>
             }
         </div>
     </dl>
-    <button id="module" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Добавить модуль</button>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    @if (User.Identity.Name == Model.User.Name)
+    {
+        <button id="module" class="btn btn-warning" data-bs-toggle="modal" data-bs-target="#myModal">Добавить модуль</button>
+        <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a>
+    }
+    else
+    {
+        <div>
+            <button id="edit" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#myModal">Откликнуться</button>
+        </div>
+    }
 </div>
 
 
@@ -121,6 +131,25 @@
 </script>
 
 <script>
+    function loadResumes() {
+        $.ajax({
+            url: '@Url.Action("Apply", "Resume")',
+            type: 'GET',
+            data: { 'resumeId': @Model.Id},
+            success: function (data) {
+                $('#module-body').html(data);
+                console.log('resumes uploaded');
+            },
+            error: function () {
+                console.log('error');
+            }
+        });
+    }
+
+    loadResumes();
+
+    setInterval(loadResumes, 10000);
+
     $('#module').on('click', function () {
         event.preventDefault();
         $.ajax({
@@ -136,4 +165,6 @@
             }
         });
     });
+
+    
 </script>

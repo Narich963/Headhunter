@@ -7,9 +7,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Headhunter.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Headhunter.Controllers;
-
+[Authorize]
 public class VacancyController : Controller
 {
     private readonly Context _context;
@@ -104,7 +105,11 @@ public class VacancyController : Controller
             return NotFound();
         }
 
-        var vacancy = await _context.Vacancies.FindAsync(id);
+        var vacancy = await _context.Vacancies.Include(v => v.User).FirstOrDefaultAsync(v => v.Id == id);
+        if (vacancy.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         if (vacancy == null)
         {
             return NotFound();
@@ -124,7 +129,11 @@ public class VacancyController : Controller
             return NotFound();
         }
 
-        var oldVacancy = await _context.Vacancies.AsNoTracking().FirstOrDefaultAsync(o => o.Id == vacancy.Id);
+        var oldVacancy = await _context.Vacancies.Include(o => o.User).AsNoTracking().FirstOrDefaultAsync(o => o.Id == vacancy.Id);
+        if (oldVacancy.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         vacancy.UserId = oldVacancy.UserId;
 
         if (ModelState.IsValid)
@@ -161,6 +170,10 @@ public class VacancyController : Controller
         var vacancy = await _context.Vacancies
             .Include(v => v.User)
             .FirstOrDefaultAsync(m => m.Id == id);
+        if (vacancy.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         if (vacancy == null)
         {
             return NotFound();
@@ -178,6 +191,10 @@ public class VacancyController : Controller
         var userId = vacancy.UserId;
         if (vacancy != null)
         {
+            if (vacancy.User.UserName != User.Identity.Name)
+            {
+                return BadRequest();
+            }
             _context.Vacancies.Remove(vacancy);
         }
 
@@ -189,6 +206,10 @@ public class VacancyController : Controller
         var vacancy = await _context.Vacancies.FirstOrDefaultAsync(r => r.Id == id);
         if (vacancy != null)
         {
+            if (vacancy.User.UserName != User.Identity.Name)
+            {
+                return BadRequest();
+            }
             vacancy.Updated = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return Redirect("javascript:history.go(-1)");
@@ -234,7 +255,7 @@ public class VacancyController : Controller
                 };
                 await _context.AddAsync(chat);
                 await _context.SaveChangesAsync();
-                return View();
+                return RedirectToAction("Index", "Chat");
             }
         }
         return NotFound();

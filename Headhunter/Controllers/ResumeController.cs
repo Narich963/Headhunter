@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Headhunter.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Headhunter.Controllers;
+[Authorize]
 
 public class ResumeController : Controller
 {
@@ -111,7 +113,11 @@ public class ResumeController : Controller
             return NotFound();
         }
 
-        var resume = await _context.Resumes.FindAsync(id);
+        var resume = await _context.Resumes.Include(o => o.User).FirstOrDefaultAsync(r => r.Id == id);
+        if (resume.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         if (resume == null)
         {
             return NotFound();
@@ -131,7 +137,11 @@ public class ResumeController : Controller
             return NotFound();
         }
 
-        var oldResume = await _context.Resumes.AsNoTracking().FirstOrDefaultAsync(o => o.Id ==  resume.Id);
+        var oldResume = await _context.Resumes.Include(o => o.User).AsNoTracking().FirstOrDefaultAsync(o => o.Id ==  resume.Id);
+        if (resume.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         resume.UserId = oldResume.UserId;
 
         if (ModelState.IsValid)
@@ -168,6 +178,11 @@ public class ResumeController : Controller
         var resume = await _context.Resumes
             .Include(r => r.User)
             .FirstOrDefaultAsync(m => m.Id == id);
+
+        if (resume.User.UserName != User.Identity.Name)
+        {
+            return BadRequest();
+        }
         if (resume == null)
         {
             return NotFound();
@@ -185,6 +200,10 @@ public class ResumeController : Controller
         var userId = resume.UserId;
         if (resume != null)
         {
+            if (resume.User.UserName != User.Identity.Name)
+            {
+                return BadRequest();
+            }
             _context.Resumes.Remove(resume);
         }
 
@@ -193,12 +212,60 @@ public class ResumeController : Controller
     }
     public async Task<IActionResult> Update(int? id)
     {
-        var resume = await _context.Resumes.FirstOrDefaultAsync(r => r.Id == id);
+        var resume = await _context.Resumes.Include(o => o.User).FirstOrDefaultAsync(r => r.Id == id);
         if (resume != null)
         {
+            if (resume.User.UserName != User.Identity.Name)
+            {
+                return BadRequest();
+            }
             resume.Updated = DateTime.UtcNow;
             await _context.SaveChangesAsync();
             return Redirect("javascript:history.go(-1)");
+        }
+        return NotFound();
+    }
+    [HttpGet]
+    public async Task<IActionResult> Apply(int resumeId)
+    {
+        User user = await _userManager.GetUserAsync(User);
+        if (user != null)
+        {
+            if (user.Role == "Наниматель")
+            {
+                var vacancies = await _context.Vacancies
+                    .Include(r => r.User)
+                    .Where(r => r.UserId == user.Id)
+                    .Where(r => r.IsPublished == true)
+                    .ToListAsync();
+                ViewBag.ResumeId = resumeId;
+                return PartialView("_ApplyPartial", vacancies);
+            }
+            ModelState.AddModelError("", "Только соискатели могут откликаться на вакансии");
+        }
+        return NotFound();
+    }
+    [HttpPost]
+    public async Task<IActionResult> Apply(int vacancyId, int resumeId)
+    {
+        Vacancy vacancy = await _context.Vacancies.FirstOrDefaultAsync(r => r.Id == vacancyId);
+        if (vacancy != null)
+        {
+            var resume = await _context.Resumes.Include(v => v.User).FirstOrDefaultAsync(v => v.Id == resumeId);
+            User employer= await _userManager.GetUserAsync(User);
+            if (employer != null)
+            {
+                Chat chat = new()
+                {
+                    EmployerId = employer.Id,
+                    EmployeeId = resume.UserId,
+                    ResumeId = resume.Id,
+                    VacancyId = vacancyId
+                };
+                await _context.AddAsync(chat);
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index", "Chat");
+            }
         }
         return NotFound();
     }

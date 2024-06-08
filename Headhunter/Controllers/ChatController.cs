@@ -1,10 +1,11 @@
 ﻿using Headhunter.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Headhunter.Controllers;
-
+[Authorize]
 public class ChatController : Controller
 {
     private readonly Context _context;
@@ -19,24 +20,23 @@ public class ChatController : Controller
         User user = await _userManager.GetUserAsync(User);
         if (user != null)
         {
-            var chats = new List<Chat>();
-            if (user.Role == "Соискатель")
-            {
-                chats = await _context.Chats
+            var chats = await _context.Chats
                     .Include(c => c.Employee)
                     .Include(c => c.Employer)
                     .Include(c => c.Resume)
                     .Include(c => c.Vacancy)
-                    .Where(c => c.EmployeeId == user.Id).ToListAsync();
+                    .ToListAsync();
+            if (user.Role == "Соискатель")
+            {
+                chats = chats
+                    .Where(c => c.EmployeeId == user.Id)
+                    .ToList();
             }
             else
             {
-                chats = await _context.Chats
-                    .Include(c => c.Employee)
-                    .Include(c => c.Employer)
-                    .Include(c => c.Resume)
-                    .Include(c => c.Vacancy)
-                    .Where(c => c.EmployerId == user.Id).ToListAsync();
+                chats = chats
+                    .Where(c => c.EmployerId == user.Id)
+                    .ToList();
             }
             return View(chats);
         }
@@ -51,6 +51,7 @@ public class ChatController : Controller
             .Include(c => c.Resume)
             .Include(c => c.Messages)
             .FirstOrDefaultAsync(c => c.Id ==  chatId);
+
 
         if (chat != null)
         {
