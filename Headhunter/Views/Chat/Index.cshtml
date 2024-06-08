@@ -1,11 +1,13 @@
 ﻿@model List<Chat>
 
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>Id</th>
             <th>Наниматель</th>
             <th>Соискатель</th>
+            <th>Резюму</th>
+            <th>Вакансия</th>
             <th></th>
         </tr>
     </thead>
@@ -14,8 +16,11 @@
         {
             <tr>
                 <td>@c.Id</td>
-                <td>@c.Employer.Name</td>
-                <td>@c.Employee.Name</td>
+                <td><a asp-action="Details" asp-controller="User" asp-route-id="@c.Employer.Id">@c.Employer.Name</a></td>
+                <td><a asp-action="Details" asp-controller="User" asp-route-id="@c.Employee.Id">@c.Employee.Name</a></td>
+                <td><a asp-action="Details" asp-controller="Resume" asp-route-id="@c.Resume.Id">@c.Resume.JobPosition</a></td>
+                <td><a asp-action="Details" asp-controller="Vacancy" asp-route-id="@c.Vacancy.Id">@c.Vacancy.Name</a></td>
+
                 <td><button id="details" onclick="loadChat(@c.Id)" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#myModal">Перейти</button></td>
             </tr>
         }

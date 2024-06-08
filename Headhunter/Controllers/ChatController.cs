@@ -25,6 +25,8 @@ public class ChatController : Controller
                 chats = await _context.Chats
                     .Include(c => c.Employee)
                     .Include(c => c.Employer)
+                    .Include(c => c.Resume)
+                    .Include(c => c.Vacancy)
                     .Where(c => c.EmployeeId == user.Id).ToListAsync();
             }
             else
@@ -32,6 +34,8 @@ public class ChatController : Controller
                 chats = await _context.Chats
                     .Include(c => c.Employee)
                     .Include(c => c.Employer)
+                    .Include(c => c.Resume)
+                    .Include(c => c.Vacancy)
                     .Where(c => c.EmployerId == user.Id).ToListAsync();
             }
             return View(chats);

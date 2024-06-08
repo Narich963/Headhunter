@@ -1,6 +1,32 @@
 ﻿@using Headhunter.ViewModels
 @model ResumeOrVacancy
 
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-controller="Home" asp-route-order="@ViewBag.Sort">Сортировать по: зарплате</a>
+            </th>
+            <form method="get" asp-action="Index" asp-controller="Home">
+                <th>
+                    <label>Поиск по названию</label>
+                    <input class="form-control" name="name" type="text"/>
+                </th>
+                <th>
+                    <label>Категория</label>
+                    <select class="form-control" name="category">
+                        <option value=""></option>
+                        <option value="It">It</option>
+                        <option value="Бизнесс">Бизнесс</option>
+                        <option value="Финансы">Финансы</option>
+                    </select>
+                </th>
+                <th><button class="btn btn-primary" type="submit">Фильтровать</button></th>
+            </form>
+        </tr>
+    </thead>
+</table>
+
 <div class="container">
     @if (Model.Vacancies != null)
     {
@@ -46,4 +72,17 @@
             </div>
         }
     }
+
+    <div class="row">
+        @if (Model.PageViewModel.HasPreviousPage)
+        {
+            <a class="col-2" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumger - 1)" class="btn btn-primary">Назад</a>
+        }
+        <span class="text-primary col-2">@Model.PageViewModel.PageNumger</span>
+        @if (Model.PageViewModel.HasNextPage)
+        {
+            <a class="col-2" asp-action="Index" asp-route-page="@(Model.PageViewModel.PageNumger + 1)" class="btn btn-primary">Вперед</a>
+
+        }
+    </div>
 </div>

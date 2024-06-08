@@ -6,4 +6,5 @@ public class ResumeOrVacancy
 {
     public List<Vacancy>? Vacancies { get; set; }
     public List<Resume>? Resumes { get; set; }
+    public PageViewModel PageViewModel { get; set; }
 }
